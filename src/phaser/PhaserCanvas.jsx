@@ -28,9 +28,12 @@ const PhaserCanvas = () => {
     function preload() {
       this.load.image('background', '/assets/images/backgroundGIF.gif');
       this.load.image('spellbook', '/assets/images/spellbookonline.png');
+      this.load.image('glitter', '/assets/images/glitter.png');
     }
 
     function create() {
+
+
       const bg = this.add.image(0, 0, 'background');
       bg.setOrigin(0.5);
     
@@ -41,9 +44,20 @@ const PhaserCanvas = () => {
       book.on('pointerdown', () => {
         window.dispatchEvent(new Event('open-spellbook'));
       });
+
+
+      
+      book.on('pointerover', () => {
+        book.setTint(0xfff67d);
+  
+      });
+      
+      book.on('pointerout', () => {
+        book.clearTint();
+
+      });
     
-      book.on('pointerover', () => book.setTint(0xaaffcc));
-      book.on('pointerout', () => book.clearTint());
+  
     
       const resizeScene = (gameSize = this.scale.gameSize) => {
         const { width, height } = gameSize;
