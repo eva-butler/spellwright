@@ -14,11 +14,11 @@ function App() {
   return (
     <div className="app-wrapper">
       <header className="game-header">
-        <h1>
-          <span className="header-sparkle">✦</span>
-          Spellwright
-          <span className="header-sparkle">✦</span>
-        </h1>
+        <img
+          src="/assets/images/spellwright_logo.png"
+          alt="Spellwright Logo"
+          className="spellwright-logo"
+        />
       </header>
 
       <div className="main-layout">

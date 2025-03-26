@@ -26,37 +26,75 @@ const PhaserCanvas = () => {
     gameRef.current = new Phaser.Game(config);
 
     function preload() {
-      this.load.image('background', '/assets/images/backgroundGIF.gif');
+      this.load.image('background', '/assets/images/background.png');
       this.load.image('spellbook', '/assets/images/spellbookonline.png');
       this.load.image('glitter', '/assets/images/glitter.png');
+      this.load.image('cauldron', '/assets/images/cauldron.png');
+      this.load.image('playbutton', '/assets/images/playbuttonF.png')
+
     }
 
     function create() {
 
 
       const bg = this.add.image(0, 0, 'background');
-      bg.setOrigin(0.5);
-    
-      const book = this.add.image(0, 0, 'spellbook')
-        .setScale(0.3)
-        .setInteractive({ useHandCursor: true });
-    
-      book.on('pointerdown', () => {
-        window.dispatchEvent(new Event('open-spellbook'));
-      });
+      bg.setOrigin(0.);
 
 
-      
-      book.on('pointerover', () => {
-        book.setTint(0xfff67d);
-  
-      });
-      
-      book.on('pointerout', () => {
-        book.clearTint();
+    /****************************BOOK **************************** */
+const book = this.add.image(0, 0, 'spellbook')
+.setInteractive({ useHandCursor: true });
 
-      });
-    
+book.on('pointerdown', () => {
+window.dispatchEvent(new Event('open-spellbook'));
+});
+
+book.on('pointerover', () => {
+book.setTint(0x40E0D0); // Blue glow effect on hover (light blue)
+
+});
+
+book.on('pointerout', () => {
+book.clearTint();
+
+});
+
+/****************************CAULDRON************************** */
+const cauldron = this.add.image(0, 0, 'cauldron')
+.setInteractive({ useHandCursor: true });
+
+cauldron.on('pointerdown', () => {
+console.log('Clicked the cauldron!');
+});
+
+cauldron.on('pointerover', () => {
+cauldron.setTint(0x40E0D0); // Blue glow effect on hover
+
+});
+
+cauldron.on('pointerout', () => {
+cauldron.clearTint();
+
+});
+
+/******************************PLAY BUTTON********************* */
+const playbutton = this.add.image(0, 0, 'playbutton')
+.setInteractive({ useHandCursor: true });
+
+playbutton.on('pointerdown', () => {
+window.dispatchEvent(new Event('activate_playbutton'));
+});
+
+playbutton.on('pointerover', () => {
+playbutton.setTint(0x40E0D0); // Blue glow effect on hover
+
+});
+
+playbutton.on('pointerout', () => {
+playbutton.clearTint();
+
+});
+
   
     
       const resizeScene = (gameSize = this.scale.gameSize) => {
@@ -72,13 +110,40 @@ const PhaserCanvas = () => {
       
         // Reposition spellbook differently depending on fullscreen
         if (isFullscreen) {
-          // Place it lower/right in fullscreen
-          book.setPosition((2*width)/5 , 2* height / 3  );
-          book.setScale(.4)
+           //BACKGROUND
+           bg.setPosition(0 , 0); 
+
+            // BOOK
+            book.setPosition((1.65*width)/5 , 2.26* height / 3   );
+            book.setScale(1.45)
+
+
+            //CAULDRON
+
+            cauldron.setPosition((3.45*width)/5 , 3.35* height / 5  ); 
+            cauldron.setScale(1.45);
+
+            //PLAY BUTTON
+            playbutton.setPosition((2.48*width)/5 , 3.5* height / 5  ); 
+            playbutton.setScale(1.5);
+
         } else {
-          // Place it over the table in normal layout
-          book.setPosition((2*width)/5 , 2* height / 3  );
-          book.setScale(.3)
+          //BACKGROUND
+          bg.setPosition(0 , -height/9); 
+
+          // BOOK
+          book.setPosition((1.65*width)/5 , 2.17* height / 3   );
+          book.setScale(1.1)
+
+
+          //CAULDRON
+
+          cauldron.setPosition((3.45*width)/5 , 3.18* height / 5  ); 
+           cauldron.setScale(1.10);
+
+           //PLAY BUTTON
+          playbutton.setPosition((2.48*width)/5 , 3.38* height / 5  ); 
+          playbutton.setScale(1.15);
         }
       };
     
