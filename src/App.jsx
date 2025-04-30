@@ -1,52 +1,18 @@
-import { useEffect, useState } from 'react';
-import PhaserCanvas from './phaser/PhaserCanvas';
-import './styles/App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import MainLayout from '@/components/MainLayout';
+import Home from '@/pages/Home';
+import PlayPage from '@/pages/PlayPage';
 
 function App() {
-  const [showSpellbook, setShowSpellbook] = useState(false);
-
-  useEffect(() => {
-    const handleOpen = () => setShowSpellbook(true);
-    window.addEventListener('open-spellbook', handleOpen);
-    return () => window.removeEventListener('open-spellbook', handleOpen);
-  }, []);
-
   return (
-    <div className="app-wrapper">
-      <header className="game-header">
-        <img
-          src="/assets/images/spellwright_logo.png"
-          alt="Spellwright Logo"
-          className="spellwright-logo"
-        />
-      </header>
-
-      <div className="main-layout">
-        <div className="game-container">
-          <PhaserCanvas />
-          <button
-            className="fullscreen-btn"
-            onClick={() => {
-              const phaserWrapper = document.getElementById('phaser-root');
-              if (phaserWrapper.requestFullscreen) {
-                phaserWrapper.requestFullscreen();
-              }
-            }}
-          >
-            ⛶ Fullscreen
-          </button>
-
-        </div>
-
-        <div className="sidebar">
-          <h2>Settings</h2>
-          <p>Volume, difficulty, controls, etc.</p>
-
-          <h2>Info</h2>
-          <p>Instructions, potion index, etc.</p>
-        </div>
-      </div>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Home />} />
+          <Route path="play" element={<PlayPage />} />
+        </Route>
+      </Routes>
+    </Router>
   );
 }
 

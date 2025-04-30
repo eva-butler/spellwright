@@ -1,0 +1,99 @@
+/* MainLayout.css */
+
+.app-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    background-image: url('/assets/images/loopingBackground.gif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    z-index: 0;
+  }
+  
+  .spellwright-logo {
+    max-height: 100px;
+    object-fit: contain;
+    margin: 0 auto;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.15));
+  }
+  
+  .game-header {
+    height: 90px;
+    background: linear-gradient(to right, #0d1020, #0d1020);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid #0f3460;
+    font-family: 'Cinzel', serif;
+    color: #ffffff;
+    padding: 0 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    position: relative;
+    z-index: 2;
+  }
+  
+  .main-layout {
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+    padding: 1rem;
+    gap: 2rem;
+    align-items: stretch;
+  }
+  
+  .game-container {
+    flex: 1;
+    max-width: 1325px;
+    height: auto;
+    margin: auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #0e1a2b;
+    border: 4px solid #333;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    z-index: 1; 
+  }
+  
+  .sidebar {
+    padding: 1.5rem;
+    background: linear-gradient(to bottom right, #0b0e1a, #11172b);
+    border-left: 2px solid #0f3460;
+    box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.05);
+    color: #cfdfff;
+    font-size: 0.95rem;
+    overflow-y: auto;
+    backdrop-filter: blur(4px);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .sidebar h2 {
+    font-size: 1.2rem;
+    margin-top: 0;
+    border-bottom: 1px solid #334e80;
+    padding-bottom: 0.3rem;
+    color: #ffffff;
+    text-shadow: 0 0 6px rgba(100, 200, 255, 0.2);
+  }
+  
+  .fullscreen-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    background-color: #222;
+    color: white;
+    border: 1px solid #666;
+    cursor: pointer;
+    z-index: 10;
+  }
+  

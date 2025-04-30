@@ -50,7 +50,7 @@ window.dispatchEvent(new Event('open-spellbook'));
 });
 
 book.on('pointerover', () => {
-book.setTint(0x40E0D0); // Blue glow effect on hover (light blue)
+book.setTint(0xe55ed5); 
 
 });
 
@@ -68,7 +68,7 @@ console.log('Clicked the cauldron!');
 });
 
 cauldron.on('pointerover', () => {
-cauldron.setTint(0x40E0D0); // Blue glow effect on hover
+cauldron.setTint(0xe55ed5); // Blue glow effect on hover
 
 });
 
@@ -82,11 +82,11 @@ const playbutton = this.add.image(0, 0, 'playbutton')
 .setInteractive({ useHandCursor: true });
 
 playbutton.on('pointerdown', () => {
-window.dispatchEvent(new Event('activate_playbutton'));
+  window.location.href = '/play';
 });
 
 playbutton.on('pointerover', () => {
-playbutton.setTint(0x40E0D0); // Blue glow effect on hover
+playbutton.setTint(0xe55ed5); // Blue glow effect on hover
 
 });
 

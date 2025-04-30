@@ -1,0 +1,13 @@
+.play-page-content {
+    width: 100%;
+    height: 100%;
+    color: white;
+    padding: 2rem;
+    box-sizing: border-box;
+  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
