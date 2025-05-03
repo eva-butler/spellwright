@@ -1,7 +1,6 @@
-// components/MainLayout.jsx
 import './MainLayout.css';
-import { Outlet } from 'react-router-dom'; // pulls in child content
 import SpellwrightLogo from '/assets/images/spellwright_logo.png';
+import PhaserCanvas from '@/phaser/PhaserCanvas'; // Make sure this import is correct
 
 const MainLayout = () => {
   return (
@@ -12,7 +11,7 @@ const MainLayout = () => {
 
       <div className="main-layout">
         <div className="game-container">
-          <Outlet /> {/* ← dynamic content (PhaserCanvas, PlayPage, etc) */}
+          <PhaserCanvas /> {/* ← render Phaser directly here */}
           <button
             className="fullscreen-btn"
             onClick={() => {
