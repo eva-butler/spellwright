@@ -11,6 +11,8 @@ export default class Mistbane_1 extends Phaser.Scene {
   }
 
   create() {
+
+    this.input.mouse.disableContextMenu();
     // Add title or flavor text
     this.add.text(this.scale.width / 2, 40, 'Mistbane: Puzzle 1', {
       fontSize: '24px',

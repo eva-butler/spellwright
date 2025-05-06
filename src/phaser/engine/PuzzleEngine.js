@@ -17,6 +17,15 @@ export class PuzzleEngine {
       this.inventoryBlocks = [];
     }
   
+    getSymbol(type, rotation) {
+      if (type === 'straight') {
+        return rotation % 2 === 0 ? '↔' : '↕';
+      } else if (type === 'elbow') {
+        return ['↱', '↳', '↲', '↰'][rotation % 4];
+      }
+      return '?';
+    }
+  
     createInventory() {
       const { inventory } = this.levelData;
       if (!inventory || inventory.length === 0) return;
@@ -29,12 +38,15 @@ export class PuzzleEngine {
         for (let i = 0; i < item.quantity; i++) {
           const x = centerX + (index * spacing) + (i * 30) - 50;
   
-          const color = item.type === 'elbow' ? 0xcc88ee : 0x88ccee;
-          const block = this.scene.add.rectangle(x, inventoryY, this.tileSize - 10, this.tileSize - 10, color)
+          const symbol = this.getSymbol(item.type, 0);
+          const block = this.scene.add.text(x, inventoryY, symbol, {
+            fontSize: '32px',
+            color: '#ffffff',
+          })
+            .setOrigin(0.5)
             .setInteractive({ draggable: true })
             .setData('type', item.type)
-            .setData('rotation', 0)
-            .setStrokeStyle(2, 0xffffff);
+            .setData('rotation', 0);
   
           this.inventoryBlocks.push(block);
           this.scene.input.setDraggable(block);
@@ -44,6 +56,7 @@ export class PuzzleEngine {
               const newRot = (block.getData('rotation') + 1) % 4;
               block.setData('rotation', newRot);
               block.setAngle(newRot * 90);
+              block.setText(this.getSymbol(block.getData('type'), newRot));
             }
           });
   
@@ -57,27 +70,32 @@ export class PuzzleEngine {
                 if (Phaser.Geom.Rectangle.Contains(bounds, dropX, dropY)) {
                   if (cell.isBlocked) return;
   
-                  // Remove previous block in this cell
                   if (cell.block) {
                     cell.block.destroy();
                     this.placedBlocks = this.placedBlocks.filter(b => b !== cell.block);
                   }
   
                   const rot = block.getData('rotation');
+                  const symbol = this.getSymbol(item.type, rot);
   
-                  const placed = this.scene.add.rectangle(
+                  const placed = this.scene.add.text(
                     cell.tile.x,
                     cell.tile.y,
-                    this.tileSize - 10,
-                    this.tileSize - 10,
-                    color
-                  ).setInteractive({ draggable: true });
+                    symbol,
+                    {
+                      fontSize: '32px',
+                      color: '#ffffff',
+                    }
+                  ).setOrigin(0.5)
+                    .setInteractive({ draggable: true });
   
                   placed.setData('type', item.type);
                   placed.setData('rotation', rot);
                   placed.rotationValue = rot;
                   placed.type = item.type;
                   placed.setAngle(rot * 90);
+
+                  placed.gridCell = cell;
   
                   this.placedBlocks.push(placed);
                   this.scene.input.setDraggable(placed);
@@ -86,10 +104,24 @@ export class PuzzleEngine {
                     if (pointer.rightButtonDown()) {
                       placed.rotationValue = (placed.rotationValue + 1) % 4;
                       placed.setAngle(placed.rotationValue * 90);
-                      cell.rotation = placed.rotationValue;
+                      placed.setText(this.getSymbol(placed.type, placed.rotationValue));
+                  
+                      // ✅ Fix: Update hit area to ensure it's still clickable
+                      const w = placed.width;
+                      const h = placed.height;
+                      placed.setInteractive(
+                        new Phaser.Geom.Rectangle(-w / 2, -h / 2, w, h),
+                        Phaser.Geom.Rectangle.Contains
+                      );
+                  
+                      if (placed.gridCell) {
+                        placed.gridCell.rotation = placed.rotationValue;
+                      }
+                  
                       this.propagateMagic(this.levelData.source.x, this.levelData.source.y, 'right');
                     }
                   });
+                  
   
                   placed.on('drag', (pointer, dragX, dragY) => {
                     placed.x = dragX;
@@ -106,7 +138,6 @@ export class PuzzleEngine {
                         if (Phaser.Geom.Rectangle.Contains(bounds, dropX, dropY)) {
                           if (dest.isBlocked) return;
   
-                          // Remove from previous cell
                           for (let row of this.grid) {
                             for (let c of row) {
                               if (c.block === placed) c.block = null;
@@ -129,7 +160,7 @@ export class PuzzleEngine {
                   cell.rotation = rot;
                   cell.type = item.type;
   
-                  block.destroy(); // Remove inventory block
+                  block.destroy();
                   this.inventoryBlocks = this.inventoryBlocks.filter(b => b !== block);
   
                   this.propagateMagic(this.levelData.source.x, this.levelData.source.y, 'right');
@@ -203,25 +234,27 @@ export class PuzzleEngine {
       const center = this.grid[y][x].tile;
       const label = type === 'source' ? 'S' : 'R';
   
-      this.scene.add.text(center.x - 15, center.y - 15, label, {
+      this.scene.add.text(center.x, center.y, label, {
         fontSize: '20px',
         color: '#ffffff',
-      });
+      }).setOrigin(0.5);
   
       this.grid[y][x].type = type;
     }
   
     placeBlock(x, y, type, rotation) {
       const cell = this.grid[y][x];
-      const color = type === 'straight' ? 0x88ccee : 0xcc88ee;
+      const symbol = this.getSymbol(type, rotation);
   
-      const block = this.scene.add.rectangle(
+      const block = this.scene.add.text(
         cell.tile.x,
         cell.tile.y,
-        this.tileSize - 10,
-        this.tileSize - 10,
-        color
-      ).setInteractive();
+        symbol,
+        {
+          fontSize: '32px',
+          color: '#ffffff',
+        }
+      ).setOrigin(0.5).setInteractive();
   
       block.rotationValue = rotation;
       block.type = type;
@@ -230,6 +263,7 @@ export class PuzzleEngine {
       block.on('pointerdown', () => {
         block.rotationValue = (block.rotationValue + 1) % 4;
         block.setAngle(block.rotationValue * 90);
+        block.setText(this.getSymbol(block.type, block.rotationValue));
         this.grid[y][x].rotation = block.rotationValue;
         this.propagateMagic(this.levelData.source.x, this.levelData.source.y, 'right');
       });
@@ -242,55 +276,52 @@ export class PuzzleEngine {
     }
   
     propagateMagic(startX, startY, sourceDirection) {
-        for (let row of this.grid) {
-          for (let cell of row) {
-            if (!cell.isBlocked) {
-              cell.tile.setFillStyle(0x444444); // reset normal color
-            }
+      for (let row of this.grid) {
+        for (let cell of row) {
+          if (!cell.isBlocked) {
+            cell.tile.setFillStyle(0x444444);
           }
         }
-      
-        const visited = new Set();
-      
-        const dfs = (x, y, incomingDir) => {
-          if (x < 0 || y < 0 || x >= this.gridSize || y >= this.gridSize) return;
-      
-          const key = `${x},${y}`;
-          if (visited.has(key)) return;
-          visited.add(key);
-      
-          const cell = this.grid[y][x];
-          if (cell.isBlocked) return;
-      
-          // Light up the tile
-          if (cell.type === 'rune') {
-            cell.tile.setFillStyle(0xffffcc); // yellow glow for activated rune
-            console.log('Rune activated!');
-            return;
-          } else {
-            cell.tile.setFillStyle(0x228822); // green path glow
-          }
-      
-          // Decide where to go next
-          let exits = [];
-      
-          if (cell.type === 'source') {
-            exits = [sourceDirection]; // start direction from source
-          } else if (cell.block) {
-            exits = this.getExitDirs(cell.type, cell.rotation, incomingDir);
-          } else {
-            return; // stop if no block and not source
-          }
-      
-          for (const dir of exits) {
-            const [dx, dy] = this.dirToOffset(dir);
-            dfs(x + dx, y + dy, this.reverseDir(dir));
-          }
-        };
-      
-        dfs(startX, startY, null);
       }
-      
+  
+      const visited = new Set();
+  
+      const dfs = (x, y, incomingDir) => {
+        if (x < 0 || y < 0 || x >= this.gridSize || y >= this.gridSize) return;
+  
+        const key = `${x},${y}`;
+        if (visited.has(key)) return;
+        visited.add(key);
+  
+        const cell = this.grid[y][x];
+        if (cell.isBlocked) return;
+  
+        if (cell.type === 'rune') {
+          cell.tile.setFillStyle(0xffffcc);
+          console.log('Rune activated!');
+          return;
+        } else {
+          cell.tile.setFillStyle(0x228822);
+        }
+  
+        let exits = [];
+  
+        if (cell.type === 'source') {
+          exits = [sourceDirection];
+        } else if (cell.block) {
+          exits = this.getExitDirs(cell.type, cell.rotation, incomingDir);
+        } else {
+          return;
+        }
+  
+        for (const dir of exits) {
+          const [dx, dy] = this.dirToOffset(dir);
+          dfs(x + dx, y + dy, this.reverseDir(dir));
+        }
+      };
+  
+      dfs(startX, startY, null);
+    }
   
     getExitDirs(type, rotation, incomingDir) {
       if (type === 'straight') {
