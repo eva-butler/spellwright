@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
 import MainMenuScene from './scenes/MainMenuScene';
 import LevelSelectScene from './scenes/LevelSelectScene';
+import Mistbane_1 from './scenes/Mistbane/Mistbane_1';
+
 
 const PhaserCanvas = () => {
   const containerRef = useRef(null);
@@ -18,7 +20,7 @@ const PhaserCanvas = () => {
         mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH,
       },
-      scene: [MainMenuScene, LevelSelectScene],
+      scene: [MainMenuScene, LevelSelectScene, Mistbane_1],
     };
 
     gameRef.current = new Phaser.Game(config);

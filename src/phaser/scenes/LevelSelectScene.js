@@ -4,9 +4,10 @@ export default class LevelSelectScene extends Phaser.Scene {
       this.tiles = [];
       this.labels = [];
       this.flasks = [];
+      
       this.levels = [
-        { potion: 'Invisibility', unlocked: true, completed: [true, true, false] },
-        { potion: 'Fire Breath', unlocked: true, completed: [false, false, false] },
+        { potion: 'Mistbane', unlocked: true, completed: [true, false, false] },
+        { potion: 'Fire Breath', unlocked: false },
         { potion: 'Levitation', unlocked: false },
         { potion: 'Night Vision', unlocked: false },
         { potion: 'Teleportation', unlocked: false },
@@ -20,6 +21,78 @@ export default class LevelSelectScene extends Phaser.Scene {
       this.load.image('flask_empty', '/assets/images/empty_flask.png');
       this.load.image('flask_full', '/assets/images/full_flask.png');
     }
+
+    showSublevelPopup(levelIndex) {
+      const level = this.levels[levelIndex];
+      const { width, height } = this.scale;
+    
+      // Dim background
+      const dimmer = this.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.6)
+        .setDepth(10)
+        .setInteractive(); // prevent clicks underneath
+    
+      // Popup container
+      const popup = this.add.container(width / 2, height / 2).setDepth(11);
+    
+      const bg = this.add.rectangle(0, 0, 300, 200, 0x222222)
+        .setStrokeStyle(2, 0xffffff)
+        .setOrigin(0.5);
+    
+      const title = this.add.text(0, -80, level.potion, {
+        fontSize: '20px',
+        color: '#ffffff'
+      }).setOrigin(0.5);
+    
+      popup.add([bg, title]);
+    
+      // Add 3 sublevel tiles
+      const spacing = 90;
+      level.completed.forEach((status, i) => {
+        const x = (i - 1) * spacing;
+    
+        const rect = this.add.rectangle(x, 0, 60, 60, 0x444444).setOrigin(0.5);
+        const text = this.add.text(x, 0, `${i + 1}`, {
+          fontSize: '18px',
+          color: '#ffffff'
+        }).setOrigin(0.5);
+    
+        const sceneKey = `${level.potion.replace(/\s/g, '')}_${i + 1}`;
+
+          if (status === true) {
+            rect.setFillStyle(0x88cc88); // completed
+            rect.setInteractive().on('pointerdown', () => {
+              this.scene.start(sceneKey); // Allow replay
+            });
+          } else if (i === 0 || level.completed[i - 1] === true) {
+            rect.setFillStyle(0xcccc88); // available
+            rect.setInteractive().on('pointerdown', () => {
+              this.scene.start(sceneKey);
+            });
+          } else {
+            rect.setFillStyle(0x666666); // locked
+            // no interaction
+          }
+
+    
+        popup.add([rect, text]);
+      });
+    
+      // Close button
+      const closeBtn = this.add.text(0, 80, 'Close', {
+        fontSize: '16px',
+        color: '#ff8888',
+        backgroundColor: '#000000',
+        padding: { x: 10, y: 4 }
+      }).setOrigin(0.5)
+        .setInteractive()
+        .on('pointerdown', () => {
+          dimmer.destroy();
+          popup.destroy();
+        });
+    
+      popup.add(closeBtn);
+    }
+    
   
     create() {
         const { width, height } = this.scale;
@@ -53,7 +126,7 @@ export default class LevelSelectScene extends Phaser.Scene {
   
         if (level?.unlocked) {
           tile.setInteractive().on('pointerdown', () => {
-            console.log(`Opening level for potion: ${level.potion}`);
+            this.showSublevelPopup(i); 
           });
   
           if (level.completed) {

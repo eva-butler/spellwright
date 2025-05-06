@@ -1,0 +1,34 @@
+import { PuzzleEngine } from '../../engine/PuzzleEngine.js';
+import { MISTBANE_1_DATA } from '../../data/Mistbane.js';
+
+export default class Mistbane_1 extends Phaser.Scene {
+  constructor() {
+    super('Mistbane_1');
+  }
+
+  preload() {
+    // Load any assets you want here (basic for now)
+  }
+
+  create() {
+    // Add title or flavor text
+    this.add.text(this.scale.width / 2, 40, 'Mistbane: Puzzle 1', {
+      fontSize: '24px',
+      color: '#ffffff',
+    }).setOrigin(0.5);
+
+    this.add.text(this.scale.width / 2, 70, '“Magic flows. Stones guide it. Use them wisely.”', {
+      fontSize: '16px',
+      color: '#bbbbbb',
+    }).setOrigin(0.5);
+
+    // Initialize puzzle engine
+    this.puzzle = new PuzzleEngine(this, {
+      gridSize: 5,
+      tileSize: 80,
+      levelData: MISTBANE_1_DATA,
+    });
+
+    this.puzzle.createGrid();
+  }
+}
