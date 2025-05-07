@@ -198,9 +198,20 @@ export class PuzzleEngine {
     }
 
     placeSpecialTile(x, y, type) {
-      const center = this.grid[y][x].tile;
-      this.grid[y][x].type = type;
-    }
+        const cell = this.grid[y][x];
+        cell.type = type;
+      
+        if (type === 'rune') {
+          const crystal = this.scene.add.image(cell.tile.x, cell.tile.y, 'crystal_white')
+            .setOrigin(0.5)
+            .setScale(0.1); // adjust scale as needed
+          cell.block = crystal; // store it if you want to manage it later
+        }
+      
+        if (type === 'source') {
+          // You can optionally add a source image here too
+        }
+      }
 
     placeBlock(x, y, type, rotation) {
       const cell = this.grid[y][x];

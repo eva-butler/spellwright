@@ -8,7 +8,8 @@ export default class Mistbane_1 extends Phaser.Scene {
 
   preload() {
     // Load any assets you want here (basic for now)
-    this.load.image('elbow-block', '/assets/images/elbow_block.png');
+    this.load.image('elbow-block', '/assets/images/ruin_blocks/elbow_block.png');
+    this.load.image('crystal_white', 'assets/images/ruin_blocks/crystal_white.png');
   }
 
   create() {
