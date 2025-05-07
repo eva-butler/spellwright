@@ -250,7 +250,7 @@ export class PuzzleEngine {
         for (let row of this.grid) {
           for (let cell of row) {
             if (!cell.isBlocked) {
-              cell.tile.setFillStyle(0x444444);
+              cell.tile.setFillStyle(0xADD8E6);
             }
           }
         }
@@ -269,10 +269,10 @@ export class PuzzleEngine {
       
           // Always light the tile first
           if (cell.type === 'rune') {
-            cell.tile.setFillStyle(0xffffcc);
+            cell.tile.setFillStyle(0xADD8E6);
             console.log('Rune activated!');
           } else {
-            cell.tile.setFillStyle(0x228822);
+            cell.tile.setFillStyle(0xADD8E6);
           }
       
           let accessPoints = [];
