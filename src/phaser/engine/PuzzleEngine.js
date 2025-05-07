@@ -151,7 +151,7 @@ export class PuzzleEngine {
         for (let x = 0; x < this.gridSize; x++) {
           const isBlocked = blockers.some(b => b.x === x && b.y === y);
           const color = isBlocked ? 0x222222 : 0x444444;
-
+      
           const tile = this.scene.add.rectangle(
             offsetX + x * this.tileSize,
             offsetY + y * this.tileSize,
@@ -159,15 +159,9 @@ export class PuzzleEngine {
             this.tileSize - 2,
             color
           ).setStrokeStyle(2, 0x888888);
-
-          if (isBlocked) {
-            this.scene.add.text(tile.x, tile.y, 'X', {
-              fontSize: '18px',
-              color: '#ff5555'
-            }).setOrigin(0.5);
-          }
-
-          this.grid[y][x] = {
+      
+          // Build the cell first
+          const cell = {
             tile,
             x,
             y,
@@ -176,6 +170,16 @@ export class PuzzleEngine {
             type: null,
             isBlocked,
           };
+      
+          // Then add the image *after* the cell exists
+          if (isBlocked) {
+            const solid = this.scene.add.image(tile.x, tile.y, 'solid_block')
+              .setOrigin(0.5)
+              .setScale(0.1); // match your tile scale
+            cell.block = solid;
+          }
+      
+          this.grid[y][x] = cell;
         }
       }
 
