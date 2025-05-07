@@ -4,11 +4,19 @@ import MainMenuScene from './scenes/MainMenuScene';
 import LevelSelectScene from './scenes/LevelSelectScene';
 import Mistbane_1 from './scenes/Mistbane/Mistbane_1';
 
-
 const PhaserCanvas = () => {
   const containerRef = useRef(null);
   const gameRef = useRef(null);
 
+  useEffect(() => {
+    const preventContextMenu = (e) => e.preventDefault();
+    window.addEventListener('contextmenu', preventContextMenu);
+
+    return () => {
+      window.removeEventListener('contextmenu', preventContextMenu);
+    };
+  }, []);
+  
   useEffect(() => {
     const config = {
       type: Phaser.AUTO,
@@ -19,6 +27,11 @@ const PhaserCanvas = () => {
       scale: {
         mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH,
+      },
+      input: {
+        mouse: {
+          capture: true, // ✅ THIS ENABLES RIGHT-CLICK DETECTION
+        },
       },
       scene: [MainMenuScene, LevelSelectScene, Mistbane_1],
     };
