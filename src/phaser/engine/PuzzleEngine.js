@@ -213,8 +213,12 @@ export class PuzzleEngine {
         }
       
         if (type === 'source') {
-          // You can optionally add a source image here too
-        }
+            const source = this.scene.add.image(cell.tile.x, cell.tile.y, 'magic_source')
+              .setOrigin(0.5)
+              .setScale(0.1)
+              .setAngle(-90); // counter-clockwise 90 degrees
+            cell.block = source;
+          }
       }
 
     placeBlock(x, y, type, rotation) {
@@ -246,11 +250,12 @@ export class PuzzleEngine {
     }
 
     propagateMagic(startX, startY) {
-        // Reset grid visuals
+        // Reset all non-blocked tiles to dark blue
         for (let row of this.grid) {
           for (let cell of row) {
             if (!cell.isBlocked) {
-              cell.tile.setFillStyle(0xADD8E6);
+              // Dark dark blue (e.g., RGB #0A0A33)
+              cell.tile.setFillStyle(0x0A0A33);
             }
           }
         }
@@ -267,12 +272,11 @@ export class PuzzleEngine {
           const cell = this.grid[y][x];
           if (cell.isBlocked) return;
       
-          // Always light the tile first
+          // Light blue for lit tiles (e.g., RGB #ADD8E6)
+          cell.tile.setFillStyle(0xADD8E6);
+      
           if (cell.type === 'rune') {
-            cell.tile.setFillStyle(0xADD8E6);
             console.log('Rune activated!');
-          } else {
-            cell.tile.setFillStyle(0xADD8E6);
           }
       
           let accessPoints = [];
@@ -294,13 +298,11 @@ export class PuzzleEngine {
               spread(x + dx, y + dy, this.reverseDir(nextDir), nextDir);
             }
           } else if (cell.type === 'rune') {
-            // Rune accepts from any side, just continue in same dir
             if (dir) {
               const [dx, dy] = this.dirToOffset(dir);
               spread(x + dx, y + dy, this.reverseDir(dir), dir);
             }
           } else {
-            // Empty tile — continue in same direction if any
             if (dir) {
               const [dx, dy] = this.dirToOffset(dir);
               spread(x + dx, y + dy, this.reverseDir(dir), dir);
@@ -310,6 +312,7 @@ export class PuzzleEngine {
       
         spread(startX, startY, null, null);
       }
+      
       
 
       getAccessPoints(type, rotation) {
